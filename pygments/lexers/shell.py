@@ -33,7 +33,7 @@ class BashLexer(RegexLexer):
     """
 
     name = 'Bash'
-    aliases = ['bash', 'sh', 'ksh', 'shell']
+    aliases = ['bash', 'sh', 'zsh', 'ksh', 'shell']
     filenames = ['*.sh', '*.ksh', '*.bash', '*.ebuild', '*.eclass',
                  '*.exheres-0', '*.exlib',
                  '.bashrc', 'bashrc', '.bash_*', 'bash_*', 'PKGBUILD']
