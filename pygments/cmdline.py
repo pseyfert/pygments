@@ -30,7 +30,7 @@ from pygments.styles import get_all_styles, get_style_by_name
 
 
 USAGE = """\
-Usage: %s [-l <lexer> | -g] [-F <filter>[:<options>]] [-f <formatter>]
+Usage: %s [-l <lexer> | -ng] [-F <filter>[:<options>]] [-f <formatter>]
           [-O <options>] [-P <option=value>] [-s] [-v] [-o <outfile>] [<infile>]
 
        %s -S <style> -f <formatter> [-a <arg>] [-O <options>] [-P <option=value>]
@@ -49,9 +49,10 @@ lexers that have no constructs spanning multiple lines!
 
 <lexer> is a lexer name (query all lexer names with -L). If -l is not
 given, the lexer is guessed from the extension of the input file name
-(this obviously doesn't work if the input is stdin).  If -g is passed,
+(this obviously doesn't work if the input is stdin). If that fails,
 attempt to guess the lexer from the file contents, or pass through as
-plain text if this fails (this can work for stdin).
+plain text if this fails (this can work for stdin). If -ng is passed,
+no guess is made and the plain text lexer is used.
 
 Likewise, <formatter> is a formatter name, and will be guessed from
 the extension of the output file name. If no output file is given,
@@ -354,14 +355,13 @@ def main_inner(popts, args, usage):
             try:
                 lexer = get_lexer_for_filename(infn, code, **parsed_opts)
             except ClassNotFound as err:
-                if '-g' in opts:
+                if not '-ng' in opts:
                     try:
                         lexer = guess_lexer(code, **parsed_opts)
                     except ClassNotFound:
                         lexer = TextLexer(**parsed_opts)
                 else:
-                    print('Error:', err, file=sys.stderr)
-                    return 1
+                    lexer = TextLexer(**parsed_opts)
             except OptionError as err:
                 print('Error:', err, file=sys.stderr)
                 return 1
